@@ -6,30 +6,55 @@ const Pusher = require('pusher');
 //CREATE NEW PUHER SCHEMA
 
 var pusher = new Pusher({
+  appId: '475223',
+  key: 'f756d847238c8314427d',
+  secret: 'e2ca54fbf0cf6129e3b2',
+  cluster: 'us2',
+  encrypted: true
+});
+console.log(pusher)
+console.log(Pusher)
 
-    appId: '475223',
-    key: 'aab3c05cf0b2d470a486',
-    secret: '0f6a54cae9cb9a87fd1d',
-    cluster: 'us2',
-    encrypted: true
+   pusher.trigger('os-poll', 'os-vote', {
+  "message": "hello world"
+    },(res,err)=>{
 
-})
+      if(err){
+        console.log("error")
+        console.log(err);
+      }else{
+        console.log("RESPONSE")
+        console.log(res.body);
+      }
+      
+    });
 
 router.get('/', (req, res) => {
 
     res.send('ROUTER');
+    pusher.trigger('os-poll', 'os-vote', {
+  points:1,
+  os:req.body.os
+    });
 
 })
 
 //TRIGGER PUSHER
 
 router.post('/', (req, res) => {
-
-pusher.trigger('OS-POLL', 'OS-VOTE', {
+  
+console.log(req.body.os);
+   pusher.trigger('os-poll', 'os-vote', {
+  points:1,
+  os:req.body.os
+    });
+/*
+pusher.trigger('os-poll', 'os-vote', {
   points: 1,
   os: req.body.os
 });
-res.json({success: true, message:"Thank-You For Voting!"});
+*/
+return res.json({success: true, message:"Thank-You For Voting!",data:{points:1,os:req.body.os}});
 
 })
 

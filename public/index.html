@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
     <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/4.2.2/pusher.min.js"></script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/canvasjs/1.7.0/canvasjs.min.js"></script>
     <script src="main.js"></script>
 
@@ -16,6 +16,7 @@
 <body>
     <div class="container">
 
+        <button class ="btn" id="sendevent">Send Event</button>
         <h1>VOTER</h1>
         <p> Vote for your favorite os to develop on.</p>
         <form id="vote-form">
@@ -40,7 +41,7 @@
 
         </form>
         <br><br>
-        <div class="chart-container" style="height:300px; width:100%">
+        <div id="chartContainer" style="height:300px; width:100%">
         </div>
     </div>
 </body>
