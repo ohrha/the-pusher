@@ -55,8 +55,7 @@ window.onload = () => {
                         (acc[vote.os] || 0) + parseInt(vote.points)), acc)
                 , {}
             )
-            console.log(data.votes)
-            console.log(voteCounts)
+  
             let dataPoints = [
 
                 { label: "Windows", y: voteCounts.Windows },
@@ -69,7 +68,6 @@ window.onload = () => {
             const chartContainer = document.querySelector('#chartContainer');
 
             if (chartContainer) {
-                console.log("chartContainer Exists")
                 const chart = new CanvasJS.Chart('chartContainer', {
 
                     animationEnabled: true,
@@ -96,17 +94,12 @@ window.onload = () => {
                     cluster: 'us2',
                     encrypted: true
                 });
-                console.log(pusher)
-                //var channel = pusher.subscribe('my-channel');
-
-
-
 
 
                 var channel = pusher.subscribe('os-poll');
                 channel.bind('pusher:subscription_succeeded', function (members) {
-                    alert('successfully subscribed!');
-                    console.log(members)
+                    //alert('successfully subscribed!');
+                    //console.log(members)
                 });
 
                 channel.bind('os-vote', function (data) {
@@ -122,7 +115,6 @@ window.onload = () => {
                         }
 
                     });
-                    //required callback...
                     chart.render();
                 });
 
