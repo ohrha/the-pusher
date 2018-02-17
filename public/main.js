@@ -1,21 +1,7 @@
 window.onload = () => {
 
     const form = document.getElementById('vote-form');
-    const event = document.getElementById('sendevent');
-    event.addEventListener('click', e => {
-
-
-        fetch('http://localhost:3000/routes', {
-
-
-            method: 'get',
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
-
-        })
-
-    })
+ 
     //FORM SUBMIT EVENT
     form.addEventListener('submit', e => {
 
