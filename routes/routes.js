@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 const Pusher = require('pusher');
-
+const Vote = require('../models/Vote');
 //CREATE NEW PUHER SCHEMA
 
 var pusher = new Pusher({
@@ -15,46 +15,61 @@ var pusher = new Pusher({
 console.log(pusher)
 console.log(Pusher)
 
-   pusher.trigger('os-poll', 'os-vote', {
+pusher.trigger('os-poll', 'os-vote', {
   "message": "hello world"
-    },(res,err)=>{
+}, (res, err) => {
 
-      if(err){
-        console.log("error")
-        console.log(err);
-      }else{
-        console.log("RESPONSE")
-        console.log(res.body);
-      }
-      
-    });
+  if (err) {
+    console.log("error")
+    console.log(err);
+  } else {
+    console.log("RESPONSE")
+    console.log(res.body);
+  }
+
+});
 
 router.get('/', (req, res) => {
 
-    res.send('ROUTER');
-    pusher.trigger('os-poll', 'os-vote', {
-  points:1,
-  os:req.body.os
-    });
+  Vote.find({}).then(votes=>{
 
-})
+    return res.json({success: true, votes:votes})
+
+  })
+
+  });
+
+
 
 //TRIGGER PUSHER
 
 router.post('/', (req, res) => {
-  
-console.log(req.body.os);
-   pusher.trigger('os-poll', 'os-vote', {
-  points:1,
-  os:req.body.os
+
+  const newVote = {
+
+    os: req.body.os,
+    points: 1
+  }
+
+  new Vote(newVote).save().then(vote => {
+
+    pusher.trigger('os-poll', 'os-vote', {
+      points: parseInt(vote.points), //CHANGES STRING INTO NUMBER
+      os: vote.os
     });
-/*
-pusher.trigger('os-poll', 'os-vote', {
-  points: 1,
-  os: req.body.os
-});
-*/
-return res.json({success: true, message:"Thank-You For Voting!",data:{points:1,os:req.body.os}});
+    return res.json({ success: true, message: "Thank-You For Voting!", data: { points: 1, os: req.body.os } });
+
+
+  })
+
+  console.log(req.body.os);
+
+  /*
+  pusher.trigger('os-poll', 'os-vote', {
+    points: 1,
+    os: req.body.os
+  });
+  */
 
 })
 

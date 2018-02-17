@@ -2,18 +2,18 @@ window.onload = () => {
 
     const form = document.getElementById('vote-form');
     const event = document.getElementById('sendevent');
-    event.addEventListener('click',e=>{
+    event.addEventListener('click', e => {
 
 
-        fetch('http://localhost:3000/routes',{
+        fetch('http://localhost:3000/routes', {
 
 
-            method:'get',
+            method: 'get',
             headers: new Headers({
-                'Content-Type':'application/json'
+                'Content-Type': 'application/json'
             })
 
-        })  
+        })
 
     })
     //FORM SUBMIT EVENT
@@ -42,75 +42,92 @@ window.onload = () => {
 
     })
 
-    let dataPoints = [
+    fetch('http://localhost:3000/routes', {
+    })
+        .then(res => res.json())
+        .then(data => {
+            const votes = data.votes;
+            const totalVotes = votes.length;
+            // Count Vote Points
+            const voteCounts = votes.reduce(
+                (acc, vote) => (
+                    (acc[vote.os] =
+                        (acc[vote.os] || 0) + parseInt(vote.points)), acc)
+                , {}
+            )
+            console.log(data.votes)
+            console.log(voteCounts)
+            let dataPoints = [
 
-        { label: "Windows", y: 4 },
-        { label: "MacOs", y: 0 },
-        { label: "Linux Distro", y: 0 },
-        { label: "Other", y: 0 },
+                { label: "Windows", y: voteCounts.Windows },
+                { label: "MacOs", y: voteCounts.MacOs },
+                { label: "Linux", y: voteCounts.Linux },
+                { label: "Other", y: voteCounts.Other },
 
-    ];
+            ];
 
-    const chartContainer = document.querySelector('#chartContainer');
+            const chartContainer = document.querySelector('#chartContainer');
 
-    if (chartContainer) {
-        console.log("chartContainer Exists")
-        const chart = new CanvasJS.Chart('chartContainer', {
+            if (chartContainer) {
+                console.log("chartContainer Exists")
+                const chart = new CanvasJS.Chart('chartContainer', {
 
-            animationEnabled: true,
-            theme: 'theme1',
-            title: {
-                text: 'Os Results'
-            },
-            data: [
-                {
-                    type: 'column',
-                    dataPoints: dataPoints
-                }
+                    animationEnabled: true,
+                    theme: 'theme1',
+                    title: {
+                        text: "Total Votes " + totalVotes
+                    },
+                    data: [
+                        {
+                            type: 'column',
+                            dataPoints: dataPoints
+                        }
 
-            ]
+                    ]
 
-        });
+                });
 
-        chart.render();
+                chart.render();
 
 
-        Pusher.logToConsole = true;
+                Pusher.logToConsole = true;
 
-        var pusher = new Pusher('aab3c05cf0b2d470a486', {
-            cluster: 'us2',
-            encrypted: true
-        });
-        console.log(pusher)
-        //var channel = pusher.subscribe('my-channel');
+                var pusher = new Pusher('aab3c05cf0b2d470a486', {
+                    cluster: 'us2',
+                    encrypted: true
+                });
+                console.log(pusher)
+                //var channel = pusher.subscribe('my-channel');
 
-      
-        
-            
 
-             var channel = pusher.subscribe('os-poll');
-              channel.bind('pusher:subscription_succeeded', function (members) {
-                alert('successfully subscribed!');
-                console.log(members)
-            });
-   
-        channel.bind('os-vote', function(data) {
-           
-            dataPoints = dataPoints.map(x => {
 
-                if (x.label == data.os) {
-                    x.y += data.points;
-                    console.log("itmatches")
-                    return x;
-                } else {
-                    return x;
-                }
 
-            });
-            //required callback...
-           chart.render();
-        });
 
-       
-    }
+                var channel = pusher.subscribe('os-poll');
+                channel.bind('pusher:subscription_succeeded', function (members) {
+                    alert('successfully subscribed!');
+                    console.log(members)
+                });
+
+                channel.bind('os-vote', function (data) {
+
+                    dataPoints = dataPoints.map(x => {
+
+                        if (x.label == data.os) {
+                            x.y += data.points;
+                            console.log("itmatches")
+                            return x;
+                        } else {
+                            return x;
+                        }
+
+                    });
+                    //required callback...
+                    chart.render();
+                });
+
+
+            }
+
+        })
 }
